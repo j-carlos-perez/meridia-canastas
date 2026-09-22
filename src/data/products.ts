@@ -42,6 +42,7 @@ export const PRODUCTS: Product[] = [
     ],
     pairingNotes: "Ideal para compartir en el brindis familiar o como detalle de agradecimiento entre colegas de trabajo.",
     packaging: "Huacal de madera artesanal con lazo festivo y cubierta protectora.",
+    shopifyVariantId: "gid://shopify/ProductVariant/50508412158117",
   },
   {
     id: "canasta-002",
@@ -68,6 +69,7 @@ export const PRODUCTS: Product[] = [
     ],
     pairingNotes: "Acompaña a la perfección carnes frías, quesos suaves y canapés de apertura.",
     packaging: "Canasta artesanal de mimbre reforzado con envoltura de alta resistencia.",
+    shopifyVariantId: "gid://shopify/ProductVariant/50508412190885",
   },
   {
     id: "canasta-003",
@@ -96,6 +98,7 @@ export const PRODUCTS: Product[] = [
     ],
     pairingNotes: "El maridaje español definitivo: vino tinto estructurado con queso curado y jamón serrano.",
     packaging: "Caja rígida con cierre magnético forrada en papel mate texturizado.",
+    shopifyVariantId: "gid://shopify/ProductVariant/50508412223653",
   },
   {
     id: "canasta-004",
@@ -123,6 +126,7 @@ export const PRODUCTS: Product[] = [
     ],
     pairingNotes: "Diseñado para los paladares más exigentes y brindis de alta distinción corporativa.",
     packaging: "Baúl de madera reutilizable de alta ebanistería con cerradura decorativa.",
+    shopifyVariantId: "gid://shopify/ProductVariant/50508412256421",
   },
   {
     id: "canasta-005",
@@ -149,5 +153,6 @@ export const PRODUCTS: Product[] = [
     ],
     pairingNotes: "Perfecta para mañanas decembrinas, desayunos navideños y sobremesas cálidas en familia.",
     packaging: "Canasta tejida en fibras vegetales biodegradables con textiles de lino.",
+    shopifyVariantId: "gid://shopify/ProductVariant/50508412289189",
   },
 ];
