@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Product } from "@/data/products";
+import { Product, PRODUCTS } from "@/data/products";
 import { CartItem } from "@/lib/shopify";
 
 interface CartContextType {
@@ -29,14 +29,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [giftNote, setGiftNote] = useState("");
   const [deliveryWindow, setDeliveryWindow] = useState("15 al 20 de Diciembre");
 
-  // Load from localStorage if present
+  // Load from localStorage if present and reconcile with PRODUCTS
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("nobilis_cart");
+      const saved = localStorage.getItem("meridia_cart");
       if (saved) {
-        setItems(JSON.parse(saved));
+        const parsed: CartItem[] = JSON.parse(saved);
+        // Ensure variant IDs are strictly up-to-date with PRODUCTS
+        const updated = parsed.map((item) => {
+          const matched = PRODUCTS.find((p) => p.id === item.id || p.handle === item.id);
+          return {
+            ...item,
+            shopifyVariantId: matched?.shopifyVariantId || item.shopifyVariantId,
+          };
+        });
+        setItems(updated);
       }
-      const savedNote = localStorage.getItem("nobilis_note");
+      const savedNote = localStorage.getItem("meridia_note");
       if (savedNote) setGiftNote(savedNote);
     } catch {
       // Local storage not available or error
@@ -46,8 +55,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Save to localStorage
   useEffect(() => {
     try {
-      localStorage.setItem("nobilis_cart", JSON.stringify(items));
-      localStorage.setItem("nobilis_note", giftNote);
+      localStorage.setItem("meridia_cart", JSON.stringify(items));
+      localStorage.setItem("meridia_note", giftNote);
     } catch {
       // ignore
     }

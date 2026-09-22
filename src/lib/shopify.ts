@@ -1,3 +1,5 @@
+import { PRODUCTS } from "@/data/products";
+
 export interface CartItem {
   id: string;
   title: string;
@@ -7,8 +9,8 @@ export interface CartItem {
   shopifyVariantId?: string;
 }
 
-export const SHOPIFY_DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || "";
-export const SHOPIFY_STOREFRONT_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || "";
+export const SHOPIFY_DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || "meridia-2crkmbkh.myshopify.com";
+export const SHOPIFY_STOREFRONT_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || "7638aa9475c868f4886a3d41f5cfc61c";
 
 /**
  * Creates a checkout via Shopify Storefront API (GraphQL cartCreate mutation)
@@ -40,11 +42,20 @@ export async function createShopifyCheckout(
     }
   `;
 
-  // Map items to Shopify lines. If no variant ID is present, we provide a placeholder
-  const lines = items.map((item) => ({
-    merchandiseId: item.shopifyVariantId || `gid://shopify/ProductVariant/${item.id}`,
-    quantity: item.quantity,
-  }));
+  // Always resolve the exact numeric Shopify ProductVariant ID from PRODUCTS definition
+  const lines = items.map((item) => {
+    const prod = PRODUCTS.find((p) => p.id === item.id || p.handle === item.id);
+    const variantId = prod?.shopifyVariantId || item.shopifyVariantId;
+
+    if (!variantId || variantId.endsWith("/0")) {
+      throw new Error(`ID de variante de Shopify no encontrado para ${item.title}`);
+    }
+
+    return {
+      merchandiseId: variantId,
+      quantity: item.quantity,
+    };
+  });
 
   const attributes = [
     { key: "Mensaje Dedicatoria", value: giftNote || "Sin dedicatoria solicitada" },
@@ -90,14 +101,14 @@ export function generateWhatsAppOrderLink(
   total: number,
   giftNote: string,
   deliveryWindow: string,
-  phoneNumber = "525500000000" // Replace with store owner's WhatsApp
+  phoneNumber = "525500000000"
 ): string {
   const itemsText = items
     .map((item) => `• ${item.quantity}x ${item.title} ($${(item.price * item.quantity).toLocaleString("es-MX")} MXN)`)
     .join("%0A");
 
   const message =
-    `🎄 *HOLA, DESEO CONFIRMAR MI PEDIDO DE CANASTAS NAVIDEÑAS*%0A%0A` +
+    `🎄 *HOLA, DESEO CONFIRMAR MI PEDIDO DE CANASTAS NAVIDEÑAS MERIDIA*%0A%0A` +
     `*Resumen del Pedido:*%0A${itemsText}%0A%0A` +
     `*Total Estimado:* $${total.toLocaleString("es-MX")} MXN%0A` +
     `*Fecha/Ventana deseada:* ${encodeURIComponent(deliveryWindow || "Lo antes posible")}%0A` +
